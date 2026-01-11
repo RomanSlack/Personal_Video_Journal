@@ -1,12 +1,16 @@
-# Personal Video Journal
+# Still
 
-A minimalist platform to store, transcribe, and tag personal video journals. Uses AI to automatically generate titles and tags based on the vibe of each entry.
+A minimalist personal video journal app. Upload videos from your phone and let AI automatically transcribe, title, and tag each entry based on its vibe.
 
 ## Features
 
 - Upload vertical videos from your phone
-- AI-powered transcription using Google Speech-to-Text (Chirp model)
-- Automatic title and tag generation using Gemini Flash
+- AI-powered transcription using OpenAI Whisper
+- Automatic title, tags, and summary generation using Gemini 2.0 Flash
+- Real-time processing progress with SSE
+- Multiple view modes (card, grid, list) with month groupings
+- Timeline scrubber for quick date navigation
+- PWA support - install on your phone's home screen
 - Clean, responsive UI for mobile and desktop
 - Filter videos by AI-generated tags
 - Simple password authentication
@@ -14,10 +18,10 @@ A minimalist platform to store, transcribe, and tag personal video journals. Use
 ## Tech Stack
 
 - **Frontend**: Next.js 15, Tailwind CSS, TypeScript
-- **Backend**: Python FastAPI, Cloud Run (scales to zero)
+- **Backend**: Python FastAPI, Docker
 - **Database**: Firebase Firestore
 - **Storage**: Firebase Storage
-- **AI**: Google Speech-to-Text, Gemini Flash
+- **AI**: OpenAI Whisper (transcription), Gemini 2.0 Flash (title/tags/summary)
 
 ## Setup
 
@@ -35,6 +39,7 @@ A minimalist platform to store, transcribe, and tag personal video journals. Use
 ### 2. Get API Keys
 
 - **Gemini API Key**: Get from [Google AI Studio](https://aistudio.google.com/apikey)
+- **OpenAI API Key**: Get from [OpenAI Platform](https://platform.openai.com/api-keys)
 
 ### 3. Backend Setup
 
@@ -42,8 +47,8 @@ A minimalist platform to store, transcribe, and tag personal video journals. Use
 cd backend
 
 # Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
@@ -54,6 +59,7 @@ cp .env.example .env
 # - APP_PASSWORD: Your chosen password
 # - JWT_SECRET: Generate a random 32-character string
 # - GEMINI_API_KEY: Your Gemini API key
+# - OPENAI_API_KEY: Your OpenAI API key
 
 # Run locally
 python main.py
@@ -83,13 +89,13 @@ npm run dev
 cd backend
 
 # Deploy to Cloud Run
-gcloud run deploy video-journal-api \
+gcloud run deploy still-api \
   --source . \
   --region us-central1 \
   --allow-unauthenticated \
   --min-instances 0 \
   --max-instances 3 \
-  --set-env-vars "APP_PASSWORD=your-password,JWT_SECRET=your-secret,GEMINI_API_KEY=your-key"
+  --set-env-vars "APP_PASSWORD=xxx,JWT_SECRET=xxx,GEMINI_API_KEY=xxx,OPENAI_API_KEY=xxx"
 ```
 
 ### Frontend (Vercel)
@@ -99,17 +105,26 @@ gcloud run deploy video-journal-api \
 3. Add environment variables in Vercel dashboard
 4. Deploy
 
+## Install as PWA
+
+On your phone:
+1. Open the app in Chrome/Safari
+2. Tap the menu (⋮) or share button
+3. Select "Add to Home Screen" or "Install App"
+4. The app will now launch in full-screen mode
+
 ## Project Structure
 
 ```
-Personal_Video_Journal/
+Still/
 ├── frontend/           # Next.js app
 │   ├── app/           # Pages (App Router)
 │   ├── components/    # React components
-│   └── lib/           # Utilities (API, auth, Firebase)
+│   ├── lib/           # Utilities (API, auth, Firebase)
+│   └── public/        # Static assets & PWA manifest
 ├── backend/           # FastAPI service
 │   ├── routers/       # API endpoints
-│   ├── services/      # Business logic
+│   ├── services/      # Business logic (transcription, AI)
 │   └── models/        # Pydantic models
 └── firebase/          # Firebase rules
 ```
@@ -118,9 +133,11 @@ Personal_Video_Journal/
 
 1. Visit the app and enter your password
 2. Click "Upload" to add a new video
-3. Wait for AI processing (transcription + tagging)
-4. Browse and filter your journal entries by tag
-5. Click any video to view with full transcript
+3. Watch real-time processing progress
+4. Browse your entries with card, grid, or list view
+5. Use the timeline scrubber to jump to specific months
+6. Filter by AI-generated tags
+7. Click any video to view with transcript and summary
 
 ## Local Development
 
@@ -128,7 +145,7 @@ Run backend and frontend in separate terminals:
 
 ```bash
 # Terminal 1 - Backend
-cd backend && python main.py
+cd backend && source .venv/bin/activate && python main.py
 
 # Terminal 2 - Frontend
 cd frontend && npm run dev

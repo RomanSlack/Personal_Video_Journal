@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Plus, LogOut, RefreshCw } from "lucide-react";
 import { isAuthenticated, removeToken } from "@/lib/auth";
 import { getVideos, getTags, Video } from "@/lib/api";
@@ -101,8 +102,17 @@ export default function HomePage() {
     <div className="min-h-screen">
       {/* Header */}
       <header className="sticky top-0 z-10 bg-[var(--background)]/80 backdrop-blur-sm border-b border-[var(--border)]">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-lg font-medium">Video Journal</h1>
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Image
+              src="/icons/logo.png"
+              alt="Still"
+              width={32}
+              height={32}
+              className="w-8 h-8"
+            />
+            <h1 className="text-xl font-semibold tracking-tight">Still</h1>
+          </div>
 
           <div className="flex items-center gap-3">
             <Link

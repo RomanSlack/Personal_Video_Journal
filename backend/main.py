@@ -16,14 +16,14 @@ from routers.auth import JWT_SECRET, JWT_ALGORITHM
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    print("Starting Video Journal API...")
+    print("Starting Still API...")
     yield
     # Shutdown
-    print("Shutting down Video Journal API...")
+    print("Shutting down Still API...")
 
 
 app = FastAPI(
-    title="Video Journal API",
+    title="Still API",
     description="Personal video journal with AI transcription and tagging",
     version="1.0.0",
     lifespan=lifespan,
@@ -59,6 +59,14 @@ async def auth_middleware(request: Request, call_next):
     if request.url.path.endswith("/progress"):
         return await call_next(request)
 
+    # CORS headers for error responses
+    cors_headers = {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Allow-Methods": "*",
+        "Access-Control-Allow-Headers": "*",
+    }
+
     # Check for auth header
     auth_header = request.headers.get("Authorization")
     if not auth_header or not auth_header.startswith("Bearer "):
@@ -66,6 +74,7 @@ async def auth_middleware(request: Request, call_next):
         return JSONResponse(
             status_code=status.HTTP_401_UNAUTHORIZED,
             content={"detail": "Missing or invalid authorization header"},
+            headers=cors_headers,
         )
 
     token = auth_header.split(" ")[1]
@@ -77,6 +86,7 @@ async def auth_middleware(request: Request, call_next):
         return JSONResponse(
             status_code=status.HTTP_401_UNAUTHORIZED,
             content={"detail": "Invalid or expired token"},
+            headers=cors_headers,
         )
 
     return await call_next(request)
@@ -89,7 +99,7 @@ app.include_router(videos_router)
 
 @app.get("/")
 async def root():
-    return {"message": "Video Journal API", "version": "1.0.0"}
+    return {"message": "Still API", "version": "1.0.0"}
 
 
 @app.get("/health")

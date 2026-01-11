@@ -13,6 +13,7 @@ from services.progress import (
     update_progress, get_progress, clear_progress, subscribe, unsubscribe,
     ProcessingStage
 )
+from services.sheets_backup import backup_video_to_sheet
 
 router = APIRouter(prefix="/videos", tags=["videos"])
 
@@ -90,6 +91,23 @@ async def process_video_task(video_id: str):
                 status=VideoStatus.READY,
             ),
         )
+
+        # Backup to Google Sheets (run in thread, non-blocking)
+        from datetime import datetime
+        try:
+            await asyncio.to_thread(
+                backup_video_to_sheet,
+                video_id=video_id,
+                title=result.title,
+                summary=result.summary,
+                tags=result.tags,
+                transcript=transcript,
+                created_at=video.created_at,
+                processed_at=datetime.utcnow()
+            )
+        except Exception as e:
+            log(f"[PROCESS] Sheets backup failed (non-fatal): {e}")
+
         progress(ProcessingStage.COMPLETE, "Processing complete!", 100)
 
         # Clear progress after a short delay

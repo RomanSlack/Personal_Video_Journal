@@ -8,3 +8,4 @@ ffmpeg-python==0.2.0
 python-dotenv==1.0.1
 httpx==0.28.1
 openai==1.58.1
+gspread==6.1.4
