@@ -205,3 +205,4 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+/backend/videojournal-f0773-firebase-adminsdk-fbsvc-e3be53e028.json

@@ -1,0 +1,12 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8080"
+    env_file:
+      - .env
+    volumes:
+      - ./videojournal-f0773-firebase-adminsdk-fbsvc-e3be53e028.json:/app/videojournal-f0773-firebase-adminsdk-fbsvc-e3be53e028.json:ro
+    environment:
+      - PORT=8080
+    restart: unless-stopped

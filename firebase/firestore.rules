@@ -1,0 +1,11 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Videos collection - allow read/write from backend (using admin SDK)
+    // Frontend doesn't directly access Firestore
+    match /videos/{videoId} {
+      allow read, write: if false; // All access via backend API
+    }
+  }
+}

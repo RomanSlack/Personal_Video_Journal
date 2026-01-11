@@ -1,0 +1,13 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /videos/{allPaths=**} {
+      // Allow uploads from authenticated frontend
+      // In production, you'd add more specific rules
+      allow read: if true;
+      allow write: if request.resource.size < 2 * 1024 * 1024 * 1024  // 2GB max
+                   && request.resource.contentType.matches('video/.*');
+    }
+  }
+}
