@@ -121,7 +121,6 @@ async def list_videos(
     """List all videos, optionally filtered by status or tag."""
     repo = get_repo()
     videos = await repo.list_all(status_filter=status, tag_filter=tag, limit=limit)
-    print(f"[API] Listing videos: count={len(videos)}, statuses={[v.status.value for v in videos]}", flush=True)
 
     # Convert to lightweight summary items (no transcript)
     summary_items = []

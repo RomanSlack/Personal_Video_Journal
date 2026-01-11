@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Plus, LogOut, RefreshCw } from "lucide-react";
 import { isAuthenticated, removeToken } from "@/lib/auth";
 import { getVideos, getTags, Video } from "@/lib/api";
-import VideoGrid from "@/components/VideoGrid";
+import VideoGallery from "@/components/VideoGallery";
 import TagFilter from "@/components/TagFilter";
 
 export default function HomePage() {
@@ -50,7 +50,6 @@ export default function HomePage() {
         getVideos(selectedTag),
         getTags(),
       ]);
-      console.log("[Home] Loaded videos:", videosData.videos.length, videosData.videos.map(v => ({ id: v.id, status: v.status, title: v.title })));
       setVideos(videosData.videos);
       setTags(tagsData);
     } catch (err) {
@@ -64,7 +63,6 @@ export default function HomePage() {
   const loadVideos = async () => {
     try {
       const data = await getVideos(selectedTag);
-      console.log("[Home] Refreshed videos:", data.videos.length);
       setVideos(data.videos);
     } catch (err) {
       console.error("Failed to load videos:", err);
@@ -153,8 +151,8 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Video grid */}
-        <VideoGrid videos={videos} loading={loading} />
+        {/* Video gallery */}
+        <VideoGallery videos={videos} loading={loading} />
       </main>
     </div>
   );

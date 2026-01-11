@@ -50,9 +50,6 @@ export default function VideoCard({ video, index = 0, onStatusChange }: VideoCar
     isProcessing
   );
 
-  // Debug logging
-  console.log("[VideoCard]", video.id, { status: video.status, isProcessing, progress, isConnected });
-
   return (
     <Link
       href={`/video/${video.id}`}
@@ -111,13 +108,6 @@ export default function VideoCard({ video, index = 0, onStatusChange }: VideoCar
               {progress && progress.percent > 0 && (
                 <p className="text-[10px] text-white/60 mt-1">
                   {progress.percent}%
-                </p>
-              )}
-
-              {/* Connection status for debugging */}
-              {!isConnected && !progress && (
-                <p className="text-[10px] text-white/40 mt-2">
-                  Connecting...
                 </p>
               )}
             </div>
