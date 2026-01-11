@@ -30,9 +30,15 @@ app = FastAPI(
 )
 
 # CORS configuration
+ALLOWED_ORIGINS = [
+    "https://still-roan.vercel.app",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Configure this for production
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -60,8 +66,9 @@ async def auth_middleware(request: Request, call_next):
         return await call_next(request)
 
     # CORS headers for error responses
+    origin = request.headers.get("origin", "")
     cors_headers = {
-        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Origin": origin if origin in ALLOWED_ORIGINS else ALLOWED_ORIGINS[0],
         "Access-Control-Allow-Credentials": "true",
         "Access-Control-Allow-Methods": "*",
         "Access-Control-Allow-Headers": "*",
